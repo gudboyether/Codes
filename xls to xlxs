@@ -1,0 +1,86 @@
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class ExcelConverter {
+
+    public static void convertXlsToXlsx(String inputFilePath, String outputFilePath) {
+        try (FileInputStream fis = new FileInputStream(inputFilePath);
+             Workbook workbook = new HSSFWorkbook(fis);
+             Workbook newWorkbook = new XSSFWorkbook()) {
+
+            for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+                Sheet sheet = workbook.getSheetAt(i);
+                Sheet newSheet = newWorkbook.createSheet(sheet.getSheetName());
+                copySheet(sheet, newSheet);
+            }
+
+            try (FileOutputStream fos = new FileOutputStream(outputFilePath)) {
+                newWorkbook.write(fos);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void copySheet(Sheet oldSheet, Sheet newSheet) {
+        for (int i = 0; i <= oldSheet.getLastRowNum(); i++) {
+            Row oldRow = oldSheet.getRow(i);
+            Row newRow = newSheet.createRow(i);
+
+            if (oldRow != null) {
+                copyRow(oldRow, newRow);
+            }
+        }
+    }
+
+    private static void copyRow(Row oldRow, Row newRow) {
+        for (int i = 0; i < oldRow.getLastCellNum(); i++) {
+            Cell oldCell = oldRow.getCell(i);
+            Cell newCell = newRow.createCell(i);
+
+            if (oldCell != null) {
+                copyCell(oldCell, newCell);
+            }
+        }
+    }
+
+    private static void copyCell(Cell oldCell, Cell newCell) {
+        switch (oldCell.getCellType()) {
+            case STRING:
+                newCell.setCellValue(oldCell.getStringCellValue());
+                break;
+            case NUMERIC:
+                newCell.setCellValue(oldCell.getNumericCellValue());
+                break;
+            case BOOLEAN:
+                newCell.setCellValue(oldCell.getBooleanCellValue());
+                break;
+            case FORMULA:
+                newCell.setCellFormula(oldCell.getCellFormula());
+                break;
+            case BLANK:
+                newCell.setBlank();
+                break;
+            default:
+                break;
+        }
+
+        CellStyle newCellStyle = newCell.getSheet().getWorkbook().createCellStyle();
+        newCellStyle.cloneStyleFrom(oldCell.getCellStyle());
+        newCell.setCellStyle(newCellStyle);
+    }
+
+    public static void main(String[] args) {
+        String inputFilePath = "path/to/your/file.xls";
+        String outputFilePath = "path/to/your/file.xlsx";
+
+        convertXlsToXlsx(inputFilePath, outputFilePath);
+        System.out.println("Conversion complete.");
+    }
+}

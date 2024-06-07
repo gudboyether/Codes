@@ -1,0 +1,46 @@
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.File;
+import java.io.IOException;
+
+public class HtmlTableParser {
+
+    public static String getCellValue(String filePath, int rowIndex, int colIndex) {
+        try {
+            File inputFile = new File(filePath);
+            Document doc = Jsoup.parse(inputFile, "UTF-8");
+            Elements table = doc.select("table");
+
+            if (table.isEmpty()) {
+                throw new RuntimeException("No table found in the provided HTML file.");
+            }
+
+            Elements rows = table.select("tr");
+            if (rowIndex >= rows.size()) {
+                throw new IndexOutOfBoundsException("Row index out of bounds.");
+            }
+
+            Elements cells = rows.get(rowIndex).select("td, th");
+            if (colIndex >= cells.size()) {
+                throw new IndexOutOfBoundsException("Column index out of bounds.");
+            }
+
+            return cells.get(colIndex).text();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void main(String[] args) {
+        String filePath = "path/to/your/file.html"; // Update with the path to your HTML file
+        int rowIndex = 1; // Row index (0-based)
+        int colIndex = 2; // Column index (0-based)
+
+        String cellValue = getCellValue(filePath, rowIndex, colIndex);
+        System.out.println("The value of the cell is: " + cellValue);
+    }
+}

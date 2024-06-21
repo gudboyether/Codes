@@ -1,0 +1,63 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.util.Set;
+
+public class DownloadPdfEdgeWithoutOptions {
+    public static void main(String[] args) {
+        // Set the path to your EdgeDriver executable
+        System.setProperty("webdriver.edge.driver", "/path/to/edgedriver");
+
+        // Initialize the WebDriver
+        WebDriver driver = new EdgeDriver();
+
+        try {
+            // Open the initial webpage
+            driver.get("https://example.com/page-with-pdf-link");
+
+            // Find the link/button that opens the PDF in a new window and click it
+            driver.findElement(By.xpath("//*[@id='pdf-link']")).click();
+
+            // Wait for the new window to open
+            Thread.sleep(2000);  // Adjust sleep time as needed
+
+            // Get the handle of the current window
+            String originalWindow = driver.getWindowHandle();
+
+            // Switch to the new window
+            Set<String> allWindows = driver.getWindowHandles();
+            for (String windowHandle : allWindows) {
+                if (!windowHandle.equals(originalWindow)) {
+                    driver.switchTo().window(windowHandle);
+                    break;
+                }
+            }
+
+            // Simulate right-click and press "Save As" (this part is system dependent)
+            Robot robot = new Robot();
+            robot.keyPress(KeyEvent.VK_CONTROL);
+            robot.keyPress(KeyEvent.VK_S);
+            robot.keyRelease(KeyEvent.VK_S);
+            robot.keyRelease(KeyEvent.VK_CONTROL);
+
+            // Wait for the save dialog to open (this part is system dependent)
+            Thread.sleep(2000);  // Adjust sleep time as needed
+
+            // Press Enter to save (default location will be the browser's default download folder)
+            robot.keyPress(KeyEvent.VK_ENTER);
+            robot.keyRelease(KeyEvent.VK_ENTER);
+
+            // Wait for the file to download
+            Thread.sleep(5000);  // Adjust sleep time to ensure download completes
+
+        } catch (InterruptedException | AWTException e) {
+            e.printStackTrace();
+        } finally {
+            // Clean up
+            driver.quit();
+        }
+    }
+}

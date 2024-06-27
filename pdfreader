@@ -1,0 +1,52 @@
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.Normalizer;
+import java.util.regex.Pattern;
+
+public class PDFLineChecker {
+
+    public static boolean doesPDFContainLines(File pdfFile, String lines) throws IOException {
+        String pdfText = extractTextFromPDF(pdfFile);
+        pdfText = normalizeString(pdfText);
+
+        String[] lineArray = lines.split("\\|");
+        for (String line : lineArray) {
+            String normalizedLine = normalizeString(line);
+            if (!pdfText.contains(normalizedLine)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static String extractTextFromPDF(File file) throws IOException {
+        try (PDDocument document = PDDocument.load(file)) {
+            PDFTextStripper pdfStripper = new PDFTextStripper();
+            return pdfStripper.getText(document);
+        }
+    }
+
+    private static String normalizeString(String input) {
+        input = input.toLowerCase();
+        input = Normalizer.normalize(input, Normalizer.Form.NFD);
+        // Remove punctuation, spaces, and bullet characters
+        input = input.replaceAll("[\\p{Punct}\\s•‣⁃◦*]+", "");
+        return input;
+    }
+
+    public static void main(String[] args) {
+        try {
+            File pdfFile = new File("path/to/your/file.pdf");
+            String lines = "Your line 1|Your line 2|Your line 3";
+
+            boolean result = doesPDFContainLines(pdfFile, lines);
+            System.out.println("Does PDF contain lines? " + result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}

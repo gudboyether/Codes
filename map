@@ -1,0 +1,44 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.NoSuchElementException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+
+public class ElementCheck {
+    public static void main(String[] args) {
+        WebDriver driver = // initialize your WebDriver instance here
+
+        String elementText = "";
+        boolean result = false;
+        String scenario;
+
+        // Try to find the element and determine the scenario
+        try {
+            WebElement element = driver.findElement(By.id("elementId"));
+            elementText = element.getText();
+            scenario = "exists";
+        } catch (NoSuchElementException e) {
+            scenario = "notExists";
+        }
+
+        // Map to handle scenarios
+        Map<String, Consumer<String>> scenarioMap = new HashMap<>();
+        scenarioMap.put("exists", text -> {
+            System.out.println("Element found. Text: " + text);
+            // Add further steps if the element exists
+            result = true; // Set result to true as the steps are positive
+        });
+        scenarioMap.put("notExists", text -> {
+            System.out.println("Element not found.");
+            // Add further steps if the element does not exist
+        });
+
+        // Execute the corresponding action
+        scenarioMap.getOrDefault(scenario, text -> System.out.println("Unknown scenario")).accept(elementText);
+
+        // Return the result
+        System.out.println("Result: " + result);
+    }
+}

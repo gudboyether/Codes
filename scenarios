@@ -1,0 +1,44 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.NoSuchElementException;
+
+public class ElementCheck {
+    public static void main(String[] args) {
+        WebDriver driver = // initialize your WebDriver instance here
+
+        String scenario;
+        String elementText = "";
+        boolean result = false;
+
+        // Try to find the element and determine the scenario
+        try {
+            WebElement element = driver.findElement(By.id("elementId"));
+            elementText = element.getText();
+            scenario = "exists";
+        } catch (NoSuchElementException e) {
+            scenario = "notExists";
+        }
+
+        // Perform actions based on the scenario
+        switch (scenario) {
+            case "exists":
+                System.out.println("Element found. Text: " + elementText);
+                // Add further steps if the element exists
+                result = true; // Set result to true as the steps are positive
+                break;
+
+            case "notExists":
+                System.out.println("Element not found.");
+                // Add further steps if the element does not exist
+                break;
+
+            default:
+                System.out.println("Unknown scenario");
+                break;
+        }
+
+        // Return the result
+        System.out.println("Result: " + result);
+    }
+}

@@ -1,0 +1,67 @@
+import org.openqa.selenium.WebDriver;
+import java.util.Set;
+
+public class TabSwitcher {
+
+    private static WebDriver driver;
+
+    // Method to initialize the WebDriver instance
+    public static void initialize(WebDriver webDriver) {
+        driver = webDriver;
+    }
+
+    // Method to switch to a tab by name
+    public static void switchToTab(String tabName) {
+        if (driver == null) {
+            throw new IllegalStateException("WebDriver instance is not initialized.");
+        }
+
+        // Get all window handles
+        Set<String> allTabs = driver.getWindowHandles();
+        // Iterate through each tab
+        for (String tab : allTabs) {
+            // Switch to the tab
+            driver.switchTo().window(tab);
+            // Check if the current tab's title matches the given tab name
+            if (driver.getTitle().equals(tabName)) {
+                // If a match is found, return (stay on this tab)
+                return;
+            }
+        }
+        // If no tab with the given name is found, print a message
+        System.out.println("No tab with the name: " + tabName);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class TestClass {
+
+    public static void main(String[] args) {
+        // Initialize WebDriver
+        WebDriver driver = new ChromeDriver();
+        
+        // Initialize TabSwitcher with the WebDriver instance
+        TabSwitcher.initialize(driver);
+        
+        // Open a few tabs
+        driver.get("http://example.com"); // Open the first tab
+        // Open additional tabs as needed
+        
+        // Use TabSwitcher to switch to a tab with the specific name
+        TabSwitcher.switchToTab("DesiredTabName");
+        
+        // Additional code...
+    }
+}

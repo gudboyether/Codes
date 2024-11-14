@@ -1,0 +1,55 @@
+Yes, it’s possible to avoid getPageSource() by directly locating an element on the page that contains the "welcome" text. We can use Selenium to find an element containing this text, and if it's not found, refresh the page.
+
+Here’s how you can do it:
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class WelcomeCheck {
+    public static void main(String[] args) {
+        // Set up the ChromeDriver path
+        System.setProperty("webdriver.chrome.driver", "path_to_chromedriver");
+
+        // Initialize WebDriver
+        WebDriver driver = new ChromeDriver();
+
+        // Open the URL you want to check
+        driver.get("your_page_url");
+
+        boolean welcomeFound = false;
+
+        while (!welcomeFound) {
+            try {
+                // Try to locate an element that contains the "welcome" text
+                if (driver.findElement(By.xpath("//*[contains(text(), 'welcome')]")) != null) {
+                    System.out.println("hello");
+                    welcomeFound = true;
+                }
+            } catch (NoSuchElementException e) {
+                // Element not found, so refresh the page
+                System.out.println("Refreshing page...");
+                try {
+                    Thread.sleep(6000);  // Wait for 6 seconds before refreshing
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
+                driver.navigate().refresh();
+            }
+        }
+
+        // Close the driver
+        driver.quit();
+    }
+}
+
+Explanation
+
+The code looks for any element that contains the text "welcome" using an XPath selector.
+
+If no element with "welcome" text is found (NoSuchElementException is caught), the code waits 6 seconds and refreshes the page.
+
+When an element with "welcome" is found, it prints "hello" and stops refreshing.
+
+

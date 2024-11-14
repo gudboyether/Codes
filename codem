@@ -1,0 +1,49 @@
+Here’s how you can do this in Java using Selenium:
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class WelcomeCheck {
+    public static void main(String[] args) {
+        // Set up the driver (you may need to specify the path to your ChromeDriver)
+        System.setProperty("webdriver.chrome.driver", "path_to_chromedriver");
+        WebDriver driver = new ChromeDriver();
+
+        // Open the URL you want to check
+        driver.get("your_page_url");
+
+        boolean welcomeFound = false;
+
+        while (!welcomeFound) {
+            try {
+                // Check if "welcome" text is present on the page
+                if (driver.getPageSource().toLowerCase().contains("welcome")) {
+                    System.out.println("hello");
+                    welcomeFound = true;
+                } else {
+                    System.out.println("Refreshing page...");
+                    Thread.sleep(6000);  // Wait for 6 seconds before refreshing
+                    driver.navigate().refresh();
+                }
+            } catch (Exception e) {
+                System.out.println("An error occurred: " + e.getMessage());
+            }
+        }
+
+        // Close the driver
+        driver.quit();
+    }
+}
+
+Explanation:
+
+The code repeatedly checks if the page source contains the word "welcome" (case-insensitive).
+
+If "welcome" is found, it prints "hello" and exits the loop.
+
+If not, it waits for 6 seconds and refreshes the page until the text appears.
+
+The Thread.sleep(6000); line pauses the execution for 6 seconds before refreshing.
+
+

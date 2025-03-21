@@ -1,0 +1,59 @@
+Here’s the final version of the Java method, where:
+✔ Input can be "age" (random month & day)
+✔ Input can be "age month" (random day)
+✔ Input can be "age month day" (fixed values used)
+
+
+---
+
+Java Code:
+
+import java.time.Year;
+import java.util.Random;
+
+public class DOBCalculator {
+    public static String getApproximateDOB(String input) {
+        try {
+            String[] parts = input.split(" ");
+            int age = Integer.parseInt(parts[0]); // Extract age
+
+            String month = parts.length > 1 ? parts[1] : getRandomMonth(); // Use provided or random month
+            String day = parts.length > 2 ? parts[2] : String.valueOf(getRandomDay()); // Use provided or random day
+            
+            int currentYear = Year.now().getValue(); // Get current year
+            int birthYear = currentYear - age; // Estimate birth year
+
+            return day + "/" + month + "/" + birthYear;
+        } catch (Exception e) {
+            return "Invalid input format. Use: '<age>', '<age> <month>', or '<age> <month> <day>'";
+        }
+    }
+
+    private static String getRandomMonth() {
+        String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        return months[new Random().nextInt(months.length)];
+    }
+
+    private static int getRandomDay() {
+        return new Random().nextInt(28) + 1; // Random day (1-28)
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getApproximateDOB("81 Sep 15")); // Uses provided day & month
+        System.out.println(getApproximateDOB("29 Mar"));    // Uses provided month, random day
+        System.out.println(getApproximateDOB("25"));        // Random month & day
+    }
+}
+
+
+---
+
+Example Outputs:
+
+getApproximateDOB("81 Sep 15") → 15/Sep/1943
+getApproximateDOB("29 Mar") → 12/Mar/1995 (random day)
+getApproximateDOB("25") → 9/Nov/1999 (random month & day)
+
+Now it supports all variations of input! Let me know if you need any changes.
+

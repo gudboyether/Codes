@@ -1,0 +1,66 @@
+import javax.mail.*;
+import javax.mail.internet.MimeMultipart;
+
+public static String getHtmlContent(IMAPMessage message) throws Exception {
+    Object content = message.getContent();
+
+    // Case 1: Simple text/html
+    if (content instanceof String && message.isMimeType("text/html")) {
+        return (String) content;
+    }
+
+    // Case 2: Simple text/plain
+    if (content instanceof String && message.isMimeType("text/plain")) {
+        String plain = (String) content;
+        return wrapAsHtml(plain); // Convert plain text to basic HTML
+    }
+
+    // Case 3: Multipart (common in modern emails)
+    if (content instanceof Multipart) {
+        Multipart multipart = (Multipart) content;
+
+        String plainText = null;
+
+        for (int i = 0; i < multipart.getCount(); i++) {
+            BodyPart part = multipart.getBodyPart(i);
+
+            // Direct HTML part
+            if (part.isMimeType("text/html")) {
+                return (String) part.getContent();
+            }
+
+            // Save plain text for fallback
+            if (part.isMimeType("text/plain")) {
+                plainText = (String) part.getContent();
+            }
+
+            // Nested alternative part
+            if (part.isMimeType("multipart/alternative")) {
+                Multipart alt = (Multipart) part.getContent();
+                for (int j = 0; j < alt.getCount(); j++) {
+                    BodyPart altPart = alt.getBodyPart(j);
+                    if (altPart.isMimeType("text/html")) {
+                        return (String) altPart.getContent();
+                    }
+                    if (altPart.isMimeType("text/plain")) {
+                        plainText = (String) altPart.getContent();
+                    }
+                }
+            }
+        }
+
+        // Fallback if HTML not found
+        if (plainText != null) {
+            return wrapAsHtml(plainText);
+        }
+    }
+
+    return "<html><body><i>No content found</i></body></html>";
+}
+
+// Helper: convert plain text to simple HTML
+private static String wrapAsHtml(String text) {
+    String escaped = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+    String withLineBreaks = escaped.replace("\n", "<br>");
+    return "<html><body>" + withLineBreaks + "</body></html>";
+}

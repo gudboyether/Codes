@@ -1,0 +1,22 @@
+Sub ExtractAllFooterText()
+    Dim doc As Document
+    Dim sec As Section
+    Dim footerText As String
+    Dim mainBodyRange As Range
+    
+    Set doc = ActiveDocument
+    footerText = ""
+    
+    'Loop through all sections and footers
+    For Each sec In doc.Sections
+        footerText = footerText & sec.Footers(wdHeaderFooterPrimary).Range.Text & vbCrLf
+        sec.Footers(wdHeaderFooterPrimary).Range.Text = "" 'Clear footer
+    Next sec
+    
+    'Paste all footer text into the main document
+    Set mainBodyRange = doc.Content
+    mainBodyRange.Collapse Direction:=wdCollapseEnd
+    mainBodyRange.Text = footerText
+    
+    MsgBox "All footer text has been moved to the main document!", vbInformation
+End Sub

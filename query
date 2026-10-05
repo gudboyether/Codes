@@ -1,0 +1,15 @@
+where winword also returned “Could not find files”, so Office isn't exposing WINWORD.EXE through PATH. That's normal and doesn't mean Office isn't installed.
+
+Let's use the Office Click-to-Run registry instead. Run this in Administrator CMD:
+
+reg query "HKLM\SOFTWARE\Microsoft\Office\ClickToRun\Configuration" /v ProductReleaseIds
+
+Then:
+
+reg query "HKLM\SOFTWARE\Microsoft\Office\ClickToRun\Configuration" /v InstallationPath
+
+And:
+
+reg query "HKLM\SOFTWARE\Microsoft\Office\ClickToRun\Configuration" /v ClientVersionToReport
+
+Send me the output. From those three values I can identify exactly what Office 2021 edition is installed and where it is installed, then we'll check its activation channel.

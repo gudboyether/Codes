@@ -1,0 +1,56 @@
+Yes — there is a way to investigate it further, especially because your Pro Plus 2021 looks like a perpetual/lifetime edition.
+
+The important distinction is:
+
+Office 2021 itself is a one-time/perpetual product — it isn't a subscription.
+
+But the particular Pro Plus installation on your laptop is currently only in OOB_GRACE, so we don't yet have evidence of a valid permanent license for it. Microsoft documents OOB_GRACE as a grace state, not the LICENSED state. 
+
+Your ProPlus2021Retail product ID tells us the installed edition/channel, but it doesn't prove that you own the license.
+
+
+We can check if this Pro Plus has a real license
+
+Run:
+
+cscript "C:\Program Files\Microsoft Office\root\Office16\ospp.vbs" /dstatusall
+
+This is better than /dstatus because it checks all Office licenses installed on the machine.
+
+Look for entries containing:
+
+LICENSE STATUS: ---LICENSED---
+
+If you see another Office Professional Plus 2021 Retail entry with LICENSED, that is very important.
+
+If everything is:
+
+OOB_GRACE
+
+then there is no currently activated permanent Pro Plus license on the machine.
+
+One more thing we can check
+
+In Word go to:
+
+File → Account
+
+Under the Office product name, look for:
+
+> Belongs to: [email address]
+
+
+
+Microsoft says the account shown there is the account associated with the Office license. 
+
+Your previous screenshot after signing in showed your account, but I couldn't see a “Belongs to” line clearly.
+
+And your genuine H&S license
+
+Your Microsoft account definitely shows Office Home & Student 2021, added November 7, 2023. That's a genuine perpetual Office license associated with your account.
+
+Microsoft confirms that once a perpetual Office product is linked to an account, that account is what you use to reinstall/activate it. 
+
+So don't uninstall the Pro Plus yet. Let's run /dstatusall first. It may reveal something interesting.
+
+[Microsoft's Office activation guidance](https://support.microsoft.com/en-us/office/activate-office-for-windows-4e6e1e2e-8c7e-4f7e-8f1e-3e2e6b6b6b6b?utm_source=chatgpt.com)

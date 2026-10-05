@@ -1,0 +1,28 @@
+Perfect. This confirms it clearly:
+
+ProductReleaseIds: ProPlus2021Retail ✅
+
+Edition: Microsoft Office Professional Plus 2021 Retail
+
+Installation: Click-to-Run
+
+Install path: C:\Program Files\Microsoft Office
+
+Version: 16.0.20326.20158
+
+
+So this is not KMS/volume Office based on the product ID. It is the Retail channel.
+
+Now check the actual license status
+
+Because ospp.vbs isn't in the old Office16 location, run:
+
+dir "C:\Program Files\Microsoft Office" /s /b | findstr /i "ospp.vbs"
+
+If it finds a path, run the exact path it gives you with:
+
+cscript "PATH_SHOWN_BY_COMMAND" /dstatus
+
+That will tell us the last 5 characters of the installed key and activation status.
+
+Important: Don't post any full product key if it appears. Only the last 5 characters are needed.

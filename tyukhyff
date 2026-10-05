@@ -1,0 +1,24 @@
+Yes. Run these read-only checks in Administrator CMD. They won't activate/deactivate Office or change anything.
+
+1. Check KMS configuration
+
+cscript "C:\Program Files\Microsoft Office\root\Office16\ospp.vbs" /dstatusall | findstr /i "KMS KMSHost LICENSE STATUS"
+
+2. Check for Office activation services/tasks
+
+schtasks /query /fo LIST /v | findstr /i "KMS OfficeActivator AutoKMS Office"
+
+3. Check for common activation-tool files
+
+dir C:\ /a /s /b 2>nul | findstr /i "KMSAuto AutoKMS KMSPico OfficeActivator"
+
+How I'll interpret it
+
+No KMS/task/tool evidence + OOB_GRACE → likely just an unactivated Office installation.
+
+KMS server configured / KMS activation task / AutoKMS/KMSPico files → strong evidence an activation workaround was used.
+
+LICENSED with a genuine Retail/OEM key → potentially legitimate perpetual activation.
+
+
+Send me the screenshots/results of those 3 commands.
